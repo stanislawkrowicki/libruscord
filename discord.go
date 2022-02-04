@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	githubRepo  = "https://github.com/stanislawkrowicki/libruscord"
-	embedColor  = 0x00C09A
-	embedTitle  = "Lekcje na dziś"
-	envLogin    = "LIBRUS_LOGIN"
-	envPassword = "LIBRUS_PASSWORD"
+	githubRepo        = "https://github.com/stanislawkrowicki/libruscord"
+	embedColor        = 0x00C09A
+	sourceEmbedTitle  = "Link do repozytorium"
+	lessonsEmbedTitle = "Lekcje na dziś"
+	envLogin          = "LIBRUS_LOGIN"
+	envPassword       = "LIBRUS_PASSWORD"
 )
 
 func createLessonsEmbed(lessons []LessonEntity) discordgo.MessageEmbed {
@@ -27,17 +28,23 @@ func createLessonsEmbed(lessons []LessonEntity) discordgo.MessageEmbed {
 
 	return discordgo.MessageEmbed{
 		URL:    githubRepo,
-		Title:  embedTitle,
+		Title:  lessonsEmbedTitle,
 		Color:  embedColor,
 		Fields: fields,
 	}
 }
 
 func SourceCode(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	embed := discordgo.MessageEmbed{
+		Title:       sourceEmbedTitle,
+		Color:       embedColor,
+		Description: fmt.Sprintf("[GitHub](%s)", githubRepo),
+	}
+
 	_ = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
-			Content: githubRepo,
+			Embeds: []*discordgo.MessageEmbed{&embed},
 		},
 	})
 }
