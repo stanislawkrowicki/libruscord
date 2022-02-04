@@ -9,7 +9,7 @@ import (
 
 const (
 	githubRepo  = "https://github.com/stanislawkrowicki/libruscord"
-	embedColor  = 16711935
+	embedColor  = 0x00C09A
 	embedTitle  = "Lekcje na dziś"
 	envLogin    = "LIBRUS_LOGIN"
 	envPassword = "LIBRUS_PASSWORD"
