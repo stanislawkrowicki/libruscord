@@ -27,7 +27,6 @@ func createLessonsEmbed(lessons []LessonEntity) discordgo.MessageEmbed {
 	}
 
 	return discordgo.MessageEmbed{
-		URL:    githubRepo,
 		Title:  lessonsEmbedTitle,
 		Color:  embedColor,
 		Fields: fields,
