@@ -16,17 +16,20 @@ const (
 )
 
 func createLessonsEmbed(lessons []LessonEntity) discordgo.MessageEmbed {
-	content := ""
+	var fields []*discordgo.MessageEmbedField
 
 	for _, lesson := range lessons {
-		content += fmt.Sprintf("%s: %s (%s) - %s [Dołącz](%s)\n\n", lesson.Number, lesson.Subject, lesson.Teacher, lesson.Group, lesson.URL)
+		name := fmt.Sprintf("%s: %s", lesson.Number, lesson.Subject)
+		value := fmt.Sprintf("%s - %s [Dołącz](%s)", lesson.Teacher, lesson.Group, lesson.URL)
+		field := discordgo.MessageEmbedField{Name: name, Value: value}
+		fields = append(fields, &field)
 	}
 
 	return discordgo.MessageEmbed{
-		URL:         githubRepo,
-		Title:       embedTitle,
-		Color:       embedColor,
-		Description: content,
+		URL:    githubRepo,
+		Title:  embedTitle,
+		Color:  embedColor,
+		Fields: fields,
 	}
 }
 
