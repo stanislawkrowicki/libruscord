@@ -37,12 +37,15 @@ type LessonEntity struct {
 	URL     string
 }
 
-func (s Session) parseLesson(node *html.Node) LessonEntity {
+func (s Session) parseLesson(node *html.Node) (LessonEntity, bool) {
 	var entity LessonEntity
 
 	numberNode, _ := htmlquery.Query(node, "//text()[1]")
 	numStr := htmlquery.InnerText(numberNode)
 	entity.Number = strings.ReplaceAll(strings.Split(numStr, ":")[1], " ", "")
+	if entity.Number == "" { // looks like it is something else than a lesson
+		return entity, false
+	}
 
 	subjectNode, _ := htmlquery.Query(node, "//span[contains(@class, 'przedmiot')]")
 	entity.Subject = htmlquery.InnerText(subjectNode)
@@ -62,7 +65,7 @@ func (s Session) parseLesson(node *html.Node) LessonEntity {
 	urlNode, _ := htmlquery.Query(node, "//a")
 	entity.URL = htmlquery.SelectAttr(urlNode, "href")
 
-	return entity
+	return entity, true
 }
 
 func (s Session) allToday(document *html.Node) (*html.Node, error) {
@@ -81,7 +84,11 @@ func (s Session) extractLessons(dayEvents *html.Node) ([]LessonEntity, error) {
 	}
 
 	for _, event := range events {
-		lessons = append(lessons, s.parseLesson(event))
+		lesson, isLesson := s.parseLesson(event)
+		if !isLesson {
+			continue
+		}
+		lessons = append(lessons, lesson)
 	}
 
 	return lessons, nil
